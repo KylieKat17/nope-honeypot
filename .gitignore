@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# NOPE runtime data (sqlite event/score/block database and its WAL files)
+*.db
+*.db-wal
+*.db-shm
