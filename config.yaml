@@ -1,0 +1,60 @@
+# config.yaml
+# Settings left out here use the defaults in nope/config.py
+
+# ================================
+#   Database and listen address
+# ================================
+
+db_path: nope.db # SQLite file for events, scores, and blocks
+
+# Bind the enabled decoys to all IPv4 interfaces
+listen_host: 0.0.0.0
+
+# ================================
+#   Decoy services
+# ================================
+
+# Set enabled to false to skip a service at startup
+decoys:
+  ssh:
+    enabled: true
+    port: 2222 # Use a separate port from standard SSH (22)
+  redis:
+    enabled: true
+    port: 6379 # Standard Redis port
+
+# ================================
+#   Event weights and score decay
+# ================================
+
+# Add the matching weight after applying decay to the previous score
+weights:
+  connect: 1 # Client opens a connection
+  probe: 2 # Client sends a banner or a command such as Redis PING
+  auth: 5 # Client attempts to authenticate
+  exploit: 10 # Decoy recognizes an exploit pattern
+
+# Time in seconds for a score to drop by half without a new event
+half_life: 300
+
+# ================================
+#   Alerts and blocks
+# ================================
+
+# Check the block threshold first when a score meets both thresholds
+alert_threshold: 5 # Log an alert at or above this score
+block_threshold: 15 # Request an nftables block at or above this score
+block_seconds: 600 # Duration of a new block in seconds
+
+# ================================
+#   Whitelisted addresses
+# ================================
+
+# Include the admin address before enabling blocking to preserve access
+# Entries accept single IPs or CIDR ranges
+# This list replaces the default whitelist, so keep the needed loopback entries
+whitelist:
+  - 127.0.0.0/8 # IPv4 loopback range
+  - ::1 # IPv6 loopback address
+  - 10.0.2.2 # VirtualBox NAT gateway (host through port forwarding)
+  - 192.168.56.1 # VirtualBox host-only adapter (verify the host IP)

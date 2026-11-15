@@ -23,16 +23,16 @@ class Daemon:
     def handle(self, event: Event):
         # Called by every decoy for every event
         try:
-            if self.responder.whitelisted(event.ip):
-                log.debug("ignoring whitelisted %s", event.ip)
+            if self.responder.is_whitelisted(event.client_ip):
+                log.debug("ignoring whitelisted %s", event.client_ip)
                 return
-            score = self.scorer.add(event)
-            action = self.responder.respond(event, score)
+            score = self.scorer.update_score(event)
+            action = self.responder.apply_response(event, score)
             self.store.add_event(event, score, action)
             log.info("%s %s/%s score=%.1f action=%s",
-                     event.ip, event.service, event.kind, score, action)
+                     event.client_ip, event.service, event.event_kind, score, action)
         except Exception:
-            log.exception("failed to handle event from %s", event.ip)
+            log.exception("failed to handle event from %s", event.client_ip)
 
 
 async def run(cfg, store, nft):
