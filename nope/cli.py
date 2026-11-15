@@ -10,7 +10,7 @@ from datetime import datetime
 
 from . import config as cfgmod
 from .nft import Nft, NftError
-from .scorer import decay
+from .scorer import decay_score
 from .store import Store
 
 
@@ -71,8 +71,8 @@ def cmd_status(args, cfg):
     now = time.time()
     rows = []
     for row in store.list_scores():
-        score = decay(row["score"], now - row["updated"], cfg["half_life"])
-        blocked = store.is_blocked(row["ip"], now)
+        score = decay_score(row["score"], now - row["updated_at"], cfg["half_life"])
+        blocked = store.is_blocked(row["client_ip"], now)
         if score < 0.1 and not blocked:
             continue
         if blocked:
@@ -81,7 +81,7 @@ def cmd_status(args, cfg):
             state = "alert"
         else:
             state = "watching"
-        rows.append((score, row["ip"], state, ago(now - row["updated"])))
+        rows.append((score, row["client_ip"], state, ago(now - row["updated_at"])))
     rows.sort(reverse=True)
     show("Threat scores", ["IP", "Score", "State", "Last seen"],
          [(ip, f"{score:.1f}", state, f"{seen} ago") for score, ip, state, seen in rows[:20]])
@@ -91,7 +91,7 @@ def cmd_status(args, cfg):
 def cmd_blocked(args, cfg):
     store = Store(cfg["db_path"])
     now = time.time()
-    rows = [(b["ip"], f"{ago(now - b['blocked_at'])} ago",
+    rows = [(b["client_ip"], f"{ago(now - b['blocked_at'])} ago",
              f"in {ago(b['expires_at'] - now)}", b["reason"])
             for b in store.active_blocks(now)]
     show("Blocked IPs", ["IP", "Blocked", "Expires", "Reason"], rows)
@@ -100,7 +100,7 @@ def cmd_blocked(args, cfg):
 
 def cmd_recent(args, cfg):
     store = Store(cfg["db_path"])
-    rows = [(fmt_time(e["ts"]), e["ip"], e["service"], e["kind"],
+    rows = [(fmt_time(e["timestamp"]), e["client_ip"], e["service"], e["event_kind"],
              f"{e['score']:.1f}", e["action"], e["payload"][:30])
             for e in store.recent_events(args.n)]
     show("Recent activity", ["Time", "IP", "Service", "Kind", "Score", "Action", "Payload"], rows)
@@ -146,7 +146,7 @@ COMMANDS = {"run": cmd_run, "status": cmd_status, "blocked": cmd_blocked,
 def main(argv=None):
     args = build_parser().parse_args(argv)
     try:
-        cfg = cfgmod.load(args.config)
+        cfg = cfgmod.load_config(args.config)
     except FileNotFoundError as exc:
         sys.exit(str(exc))
     return COMMANDS[args.cmd](args, cfg)
