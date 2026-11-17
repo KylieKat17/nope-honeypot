@@ -5,7 +5,6 @@ import time
 
 from .events import Event
 
-
 # ================================
 #   SQLite schema
 # ================================
@@ -79,9 +78,7 @@ class Store:
 
     def recent_events(self, limit=15):
         # Sort by insertion order so the most recently logged events appear first
-        return self.db.execute(
-            "SELECT * FROM events ORDER BY id DESC LIMIT ?", (limit,)
-        ).fetchall()
+        return self.db.execute("SELECT * FROM events ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
 
     # ================================
     #   Per-IP scores

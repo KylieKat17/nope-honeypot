@@ -1,4 +1,4 @@
-'''Command line interface: nope run | status | blocked | recent | unblock'''
+"""Command line interface: nope run | status | blocked | recent | unblock"""
 
 import argparse
 import ipaddress
@@ -53,11 +53,13 @@ def cmd_run(args, cfg):
 
     if not args.dry_run and hasattr(os, "geteuid") and os.geteuid() != 0:
         sys.exit("nope run needs root to edit nftables (use sudo, or --dry-run)")
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s",
-                        datefmt="%H:%M:%S")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
+    )
     store = Store(cfg["db_path"])
     try:
         import asyncio
+
         asyncio.run(daemon.run(cfg, store, Nft(args.dry_run)))
     except KeyboardInterrupt:
         pass
@@ -83,26 +85,44 @@ def cmd_status(args, cfg):
             state = "watching"
         rows.append((score, row["client_ip"], state, ago(now - row["updated_at"])))
     rows.sort(reverse=True)
-    show("Threat scores", ["IP", "Score", "State", "Last seen"],
-         [(ip, f"{score:.1f}", state, f"{seen} ago") for score, ip, state, seen in rows[:20]])
+    show(
+        "Threat scores",
+        ["IP", "Score", "State", "Last seen"],
+        [(ip, f"{score:.1f}", state, f"{seen} ago") for score, ip, state, seen in rows[:20]],
+    )
     return 0
 
 
 def cmd_blocked(args, cfg):
     store = Store(cfg["db_path"])
     now = time.time()
-    rows = [(b["client_ip"], f"{ago(now - b['blocked_at'])} ago",
-             f"in {ago(b['expires_at'] - now)}", b["reason"])
-            for b in store.active_blocks(now)]
+    rows = [
+        (
+            b["client_ip"],
+            f"{ago(now - b['blocked_at'])} ago",
+            f"in {ago(b['expires_at'] - now)}",
+            b["reason"],
+        )
+        for b in store.active_blocks(now)
+    ]
     show("Blocked IPs", ["IP", "Blocked", "Expires", "Reason"], rows)
     return 0
 
 
 def cmd_recent(args, cfg):
     store = Store(cfg["db_path"])
-    rows = [(fmt_time(e["timestamp"]), e["client_ip"], e["service"], e["event_kind"],
-             f"{e['score']:.1f}", e["action"], e["payload"][:30])
-            for e in store.recent_events(args.n)]
+    rows = [
+        (
+            fmt_time(e["timestamp"]),
+            e["client_ip"],
+            e["service"],
+            e["event_kind"],
+            f"{e['score']:.1f}",
+            e["action"],
+            e["payload"][:30],
+        )
+        for e in store.recent_events(args.n)
+    ]
     show("Recent activity", ["Time", "IP", "Service", "Kind", "Score", "Action", "Payload"], rows)
     return 0
 
@@ -123,11 +143,13 @@ def cmd_unblock(args, cfg):
 def build_parser():
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("-c", "--config", help="path to config.yaml")
-    common.add_argument("--dry-run", action="store_true",
-                        help="don't touch nftables, just log what would happen")
+    common.add_argument(
+        "--dry-run", action="store_true", help="don't touch nftables, just log what would happen"
+    )
 
     parser = argparse.ArgumentParser(
-        prog="nope", description="NOPE Observes Potential Enemies: honeypot-triggered response.")
+        prog="nope", description="NOPE Observes Potential Enemies: honeypot-triggered response."
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("run", parents=[common], help="start the decoys and the response daemon")
     sub.add_parser("status", parents=[common], help="show current threat scores")
@@ -139,8 +161,13 @@ def build_parser():
     return parser
 
 
-COMMANDS = {"run": cmd_run, "status": cmd_status, "blocked": cmd_blocked,
-            "recent": cmd_recent, "unblock": cmd_unblock}
+COMMANDS = {
+    "run": cmd_run,
+    "status": cmd_status,
+    "blocked": cmd_blocked,
+    "recent": cmd_recent,
+    "unblock": cmd_unblock,
+}
 
 
 def main(argv=None):

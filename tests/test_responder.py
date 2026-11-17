@@ -29,6 +29,7 @@ def make_event(client_ip="10.0.0.5", timestamp=1000.0):
 #   Score thresholds and blocks
 # ================================
 
+
 # Check that low scores produce a log action without a firewall command
 def test_below_alert_is_just_logged():
     responder = make_responder()
@@ -69,11 +70,10 @@ def test_already_blocked_is_not_blocked_twice():
 #   Whitelist lookup
 # ================================
 
+
 # Check that whitelist lookup handles both CIDR ranges and single addresses
 def test_whitelist_matches_single_ips_and_ranges():
-    responder = make_responder(
-        whitelist=["192.168.56.0/24", "10.0.0.9"]
-    )
+    responder = make_responder(whitelist=["192.168.56.0/24", "10.0.0.9"])
     assert responder.is_whitelisted("192.168.56.1")  # Falls inside the CIDR range
     assert responder.is_whitelisted("10.0.0.9")  # Matches the single address
     assert not responder.is_whitelisted("10.0.0.10")  # Matches neither entry
@@ -82,6 +82,7 @@ def test_whitelist_matches_single_ips_and_ranges():
 # ================================
 #   nftables commands in dry-run
 # ================================
+
 
 # Check that an IPv6 address goes into the IPv6 nftables set
 def test_nft_uses_ipv6_set_for_v6():

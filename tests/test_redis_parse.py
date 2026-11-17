@@ -2,10 +2,10 @@
 
 from nope.decoys.redis import classify, parse_command
 
-
 # ================================
 #   Redis command parsing and classification
 # ================================
+
 
 # Check that a RESP AUTH request exposes both the command and its argument
 def test_resp_auth_is_classified_as_auth():

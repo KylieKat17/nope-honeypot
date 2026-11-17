@@ -1,6 +1,6 @@
-'''
-The actual daemon that runs the decoys, scores events, and responds 
-'''
+"""
+The actual daemon that runs the decoys, scores events, and responds
+"""
 
 import asyncio
 import logging
@@ -29,8 +29,14 @@ class Daemon:
             score = self.scorer.update_score(event)
             action = self.responder.apply_response(event, score)
             self.store.add_event(event, score, action)
-            log.info("%s %s/%s score=%.1f action=%s",
-                     event.client_ip, event.service, event.event_kind, score, action)
+            log.info(
+                "%s %s/%s score=%.1f action=%s",
+                event.client_ip,
+                event.service,
+                event.event_kind,
+                score,
+                action,
+            )
         except Exception:
             log.exception("failed to handle event from %s", event.client_ip)
 

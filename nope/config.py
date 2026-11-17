@@ -5,7 +5,6 @@ from pathlib import Path
 
 import yaml
 
-
 # ================================
 #   Defaults and config paths
 # ================================
@@ -32,6 +31,7 @@ SEARCH_PATHS = [Path("config.yaml"), Path("/etc/nope/config.yaml")]
 # ================================
 #   Loading and merging overrides
 # ================================
+
 
 def merge_overrides(settings, overrides):
     for setting, override_value in overrides.items():

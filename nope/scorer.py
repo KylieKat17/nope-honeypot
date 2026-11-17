@@ -2,10 +2,10 @@
 
 from .events import Event
 
-
 # ================================
 #   Score decay
 # ================================
+
 
 def decay_score(score, elapsed_seconds, half_life_seconds):
     # A nonpositive half-life or elapsed time leaves the score unchanged
@@ -19,6 +19,7 @@ def decay_score(score, elapsed_seconds, half_life_seconds):
 # ================================
 #   Per-IP scores
 # ================================
+
 
 class Scorer:
     def __init__(self, store, event_weights, half_life_seconds):

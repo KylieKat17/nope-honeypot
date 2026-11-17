@@ -24,6 +24,7 @@ def make_event(event_kind, timestamp=0, client_ip="10.0.0.5"):
 #   Per-IP scores
 # ================================
 
+
 # Check that event weights add together for the same client
 def test_event_weights_accumulate():
     scorer = make_scorer()
@@ -50,13 +51,16 @@ def test_scores_are_per_ip():
 #   Score decay
 # ================================
 
+
 # Check the remaining score after one and two full half-lives
 def test_score_halves_each_half_life():
     starting_score = 8
     half_life_seconds = 100
 
     assert decay_score(starting_score, 100, half_life_seconds) == pytest.approx(4)  # Half remains
-    assert decay_score(starting_score, 200, half_life_seconds) == pytest.approx(2)  # Quarter remains
+    assert decay_score(starting_score, 200, half_life_seconds) == pytest.approx(
+        2
+    )  # Quarter remains
 
 
 # Check that the previous score decays before the next event adds its weight

@@ -1,9 +1,9 @@
-'''
+"""
 Decoy Redis server
 - Fake Redis server that pretends to require auth
 - Sorts commands into "auth", "exploit", and "probe" categories for scoring
 - Gives fake -WRONGPASS or -NOAUTH responses
-'''
+"""
 
 import asyncio
 
@@ -13,8 +13,19 @@ from .base import IDLE_TIMEOUT, MAX_READ, clean, close, peer_ip
 MAX_ROUNDS = 50
 
 EXPLOIT_COMMANDS = {
-    "CONFIG", "SLAVEOF", "REPLICAOF", "MODULE", "EVAL", "EVALSHA",
-    "SCRIPT", "FLUSHALL", "FLUSHDB", "DEBUG", "SAVE", "BGSAVE", "SHUTDOWN",
+    "CONFIG",
+    "SLAVEOF",
+    "REPLICAOF",
+    "MODULE",
+    "EVAL",
+    "EVALSHA",
+    "SCRIPT",
+    "FLUSHALL",
+    "FLUSHDB",
+    "DEBUG",
+    "SAVE",
+    "BGSAVE",
+    "SHUTDOWN",
 }
 
 NOAUTH = b"-NOAUTH Authentication required.\r\n"

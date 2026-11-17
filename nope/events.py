@@ -18,7 +18,7 @@ KINDS = ("connect", "probe", "auth", "exploit")
 class Event:
     client_ip: str
     listen_port: int
-    service: str         # "ssh", "redis", etc
-    event_kind: str      # one of KINDS
-    payload: str = ""    # printable, truncated copy of what the client sent
+    service: str  # "ssh", "redis", etc
+    event_kind: str  # one of KINDS
+    payload: str = ""  # printable, truncated copy of what the client sent
     timestamp: float = field(default_factory=time.time)

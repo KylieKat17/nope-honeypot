@@ -61,9 +61,7 @@ class Nft:
 
         if shutil.which("nft") is None:
             raise NftError("nft not found, install nftables or use --dry-run")
-        result = subprocess.run(
-            ["nft", "-f", "-"], input=script, text=True, capture_output=True
-        )
+        result = subprocess.run(["nft", "-f", "-"], input=script, text=True, capture_output=True)
         if result.returncode != 0:
             raise NftError(result.stderr.strip() or "nft failed")
 
@@ -75,7 +73,9 @@ class Nft:
 
     def add(self, ip, seconds):
         set_name, address = block_target(ip)
-        self.run_script(f"add element inet nope {set_name} {{ {address} timeout {int(seconds)}s }}\n")
+        self.run_script(
+            f"add element inet nope {set_name} {{ {address} timeout {int(seconds)}s }}\n"
+        )
 
     def remove(self, ip):
         set_name, address = block_target(ip)

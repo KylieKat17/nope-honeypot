@@ -1,7 +1,7 @@
-'''Some helper functions that the decoys can share'''
+"""Some helper functions that the decoys can share"""
 
-IDLE_TIMEOUT = 10        # seconds to wait for client to respond
-MAX_READ = 4096          # never read more than this at once
+IDLE_TIMEOUT = 10  # seconds to wait for client to respond
+MAX_READ = 4096  # never read more than this at once
 MAX_PAYLOAD_CHARS = 256  # how much of a payload we keep in the event log
 
 
