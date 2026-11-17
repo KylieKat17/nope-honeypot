@@ -2,6 +2,15 @@
 
 **NOPE Observes Potential Enemies.** The SSH and Redis decoys turn client activity into events. NOPE keeps a score per client IP, reduces it over time, and uses score thresholds to log, alert, or request a temporary nftables block. SQLite stores events, scores, and blocks for the CLI.
 
+## Install
+```text
+```
+git clone https://github.com/KylieKat17/nope-honeypot.git && cd ~/nope-honeypot
+bash install.sh defender     # on the machine being protected
+bash install.sh attacker     # on a second machine, to test it
+```
+```
+
 ## 1. Set up the project
 
 Run these commands in a Linux VM inside the cloned `nope-honeypot` directory. Python 3.10 or newer, `venv`, and pip are required. Install nftables on the VM before using live blocking.
